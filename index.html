@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bedroom Bidding</title>
+    <style>
+        /* Add your CSS styles here */
+        .bedroom img {
+            width: 50%;
+            height: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bedroom Bidding</h1>
+
+    <div class="bedroom">
+        <h2>Bedroom 1</h2>
+        <img src="bedroom1.jpg" alt="Bedroom 1">
+        <br></br>
+        <label for="bedroom1-bid">Bid Price:</label>
+        <input type="text" id="bedroom1-bid" placeholder="Enter bid price">
+        <label for="bedroom1-name">Name:</label>
+        <input type="text" id="bedroom1-name" placeholder="Enter your name">
+        <button onclick="submitBid('bedroom1')">Submit Bid</button>
+        <table id="bedroom1-table">
+            <tr>
+                <th>Name</th>
+                <th>Bid Price</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bedroom">
+        <h2>Bedroom 2</h2>
+        <img src="bedroom2.jpg" alt="Bedroom 2">
+        <br></br>
+        <label for="bedroom2-bid">Bid Price:</label>
+        <input type="text" id="bedroom2-bid" placeholder="Enter bid price">
+        <label for="bedroom2-name">Name:</label>
+        <input type="text" id="bedroom2-name" placeholder="Enter your name">
+        <button onclick="submitBid('bedroom2')">Submit Bid</button>
+        <table id="bedroom2-table">
+            <tr>
+                <th>Name</th>
+                <th>Bid Price</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bedroom">
+        <h2>Bedroom 3</h2>
+        <img src="bedroom3.jpg" alt="Bedroom 3">
+        <br></br>
+        <label for="bedroom3-bid">Bid Price:</label>
+        <input type="text" id="bedroom3-bid" placeholder="Enter bid price">
+        <label for="bedroom3-name">Name:</label>
+        <input type="text" id="bedroom3-name" placeholder="Enter your name">
+        <button onclick="submitBid('bedroom3')">Submit Bid</button>
+        <table id="bedroom3-table">
+            <tr>
+                <th>Name</th>
+                <th>Bid Price</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bedroom">
+        <h2>Bedroom 4</h2>
+        <img src="bedroom4.jpg" alt="Bedroom 4">
+        <br></br>
+        <label for="bedroom4-bid">Bid Price:</label>
+        <input type="text" id="bedroom4-bid" placeholder="Enter bid price">
+        <label for="bedroom4-name">Name:</label>
+        <input type="text" id="bedroom4-name" placeholder="Enter your name">
+        <button onclick="submitBid('bedroom4')">Submit Bid</button>
+        <table id="bedroom4-table">
+            <tr>
+                <th>Name</th>
+                <th>Bid Price</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Initialize the bid data for each bedroom from localStorage (if available)
+        var bedroom1Bids = JSON.parse(localStorage.getItem("bedroom1Bids")) || [];
+        var bedroom2Bids = JSON.parse(localStorage.getItem("bedroom2Bids")) || [];
+        var bedroom3Bids = JSON.parse(localStorage.getItem("bedroom3Bids")) || [];
+        var bedroom4Bids = JSON.parse(localStorage.getItem("bedroom4Bids")) || [];
+    
+        // Run this function on page load to display the existing bids
+        window.onload = function () {
+            updateTable("bedroom1", bedroom1Bids);
+            updateTable("bedroom2", bedroom2Bids);
+            updateTable("bedroom3", bedroom3Bids);
+            updateTable("bedroom4", bedroom4Bids);
+        };
+    
+        function submitBid(bedroom) {
+            var bidInput = document.getElementById(bedroom + "-bid");
+            var nameInput = document.getElementById(bedroom + "-name");
+            var bid = bidInput.value;
+            var name = nameInput.value;
+    
+            // Validate the bid input
+            if (bid === "" || isNaN(parseFloat(bid))) {
+                alert("Please enter a valid bid price.");
+                return;
+            }
+    
+            // Validate the name input
+            if (name === "") {
+                alert("Please enter your name.");
+                return;
+            }
+    
+            var currentBids;
+            var highestBid = 0;
+    
+            // Get the current bid data for the respective bedroom
+            switch (bedroom) {
+                case "bedroom1":
+                    currentBids = bedroom1Bids;
+                    break;
+                case "bedroom2":
+                    currentBids = bedroom2Bids;
+                    break;
+                case "bedroom3":
+                    currentBids = bedroom3Bids;
+                    break;
+                case "bedroom4":
+                    currentBids = bedroom4Bids;
+                    break;
+                default:
+                    return;
+            }
+    
+            // Find the highest bid in the current bid data
+            currentBids.forEach(function (bid) {
+                if (bid.bid > highestBid) {
+                    highestBid = bid.bid;
+                }
+            });
+    
+            // Check if the new bid is at least $10 higher than the highest bid
+            if (parseFloat(bid) <= highestBid + 10) {
+                alert("Please enter a bid that is at least $10 higher than the current highest bid.");
+                return;
+            }
+    
+            // Update the bid data for the respective bedroom
+            currentBids.push({ name: name, bid: parseFloat(bid) });
+            updateTable(bedroom, currentBids);
+    
+            // Clear the input fields after submission
+            bidInput.value = "";
+            nameInput.value = "";
+    
+            // Save the bid data to localStorage
+            localStorage.setItem("bedroom1Bids", JSON.stringify(bedroom1Bids));
+            localStorage.setItem("bedroom2Bids", JSON.stringify(bedroom2Bids));
+            localStorage.setItem("bedroom3Bids", JSON.stringify(bedroom3Bids));
+            localStorage.setItem("bedroom4Bids", JSON.stringify(bedroom4Bids));
+        }
+    
+        function resetBids() {
+            // Clear the bid data for each bedroom
+            bedroom1Bids = [];
+            bedroom2Bids = [];
+            bedroom3Bids = [];
+            bedroom4Bids = [];
+    
+            // Clear the localStorage data
+            localStorage.removeItem("bedroom1Bids");
+            localStorage.removeItem("bedroom2Bids");
+            localStorage.removeItem("bedroom3Bids");
+            localStorage.removeItem("bedroom4Bids");
+    
+            // Clear the tables
+            var tables = document.querySelectorAll("table");
+            tables.forEach(function (table) {
+                table.innerHTML = "";
+            });
+        }
+    
+        function removeBid(bedroom, index) {
+            var password = prompt("Enter password to remove bid:");
+            if (password === "your_password") {
+                var currentBids;
+    
+                // Get the current bid data for the respective bedroom
+                switch (bedroom) {
+                    case "bedroom1":
+                        currentBids = bedroom1Bids;
+                        break;
+                    case "bedroom2":
+                        currentBids = bedroom2Bids;
+                        break;
+                    case "bedroom3":
+                        currentBids = bedroom3Bids;
+                        break;
+                    case "bedroom4":
+                        currentBids = bedroom4Bids;
+                        break;
+                    default:
+                        return;
+                }
+    
+                // Remove the bid from the current bid data
+                currentBids.splice(index, 1);
+                updateTable(bedroom, currentBids);
+    
+                // Save the updated bid data to localStorage
+                localStorage.setItem("bedroom1Bids", JSON.stringify(bedroom1Bids));
+                localStorage.setItem("bedroom2Bids", JSON.stringify(bedroom2Bids));
+                localStorage.setItem("bedroom3Bids", JSON.stringify(bedroom3Bids));
+                localStorage.setItem("bedroom4Bids", JSON.stringify(bedroom4Bids));
+            } else {
+                alert("Incorrect password. Bid removal canceled.");
+            }
+        }
+    
+        // Update the table for a specific bedroom
+        function updateTable(bedroom, bids) {
+            var table = document.getElementById(bedroom + "-table");
+    
+            // Clear the table body before updating
+            table.innerHTML = "";
+    
+            // Sort the bids in descending order based on bid price
+            bids.sort(function (a, b) {
+                return b.bid - a.bid;
+            });
+    
+            // Add each bid as a row in the table
+            bids.forEach(function (bid, index) {
+                var row = document.createElement("tr");
+                var nameCell = document.createElement("td");
+                var bidCell = document.createElement("td");
+                var removeCell = document.createElement("td");
+                var removeButton = document.createElement("button");
+    
+                nameCell.textContent = bid.name;
+                bidCell.textContent = "$" + bid.bid.toFixed(2);
+    
+                removeButton.textContent = "Remove";
+                removeButton.addEventListener("click", function () {
+                    removeBid(bedroom, index);
+                });
+    
+                removeCell.appendChild(removeButton);
+    
+                row.appendChild(nameCell);
+                row.appendChild(bidCell);
+                row.appendChild(removeCell);
+                table.appendChild(row);
+            });
+        }
+    </script>
+    
+    
+    
+</body>
+</html>
